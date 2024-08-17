@@ -1,6 +1,9 @@
 import lcs as l
 
 def reconstruct(old_line, commit_data_line):
+    """
+        [1] Generates the new line from old line and commit data
+    """
     # here each individual line and its commit data are required
     old_line = old_line.split(" ")
     insertion, deletion = commit_data_line
@@ -19,6 +22,6 @@ def reconstruct(old_line, commit_data_line):
 
     
 
-# o, n = "Hey there whatsup man", "Hi whatsup my man"
+# o, n = "Hey there whatsup man", "Hey there whatsup man"
 # lcs, cd = l.LCS(old_line=o, new_line=n)
 # print(reconstruct(old_line=o, commit_data_line=cd))

@@ -1,8 +1,18 @@
 import terminal_output as TO
 import time
 import os
-
-TO.output("PASTPORT COMMAND LINE INTERFACE (PRT CLI) version 2\n---Authored by Khritish Kumar Behera---", "g")
+import init
+def welcome_mssg():
+    TO.output("## ##        ##        ## ##     ## ## ##   ## ##       ##     ## ##     ## ## ##", color="b")
+    TO.output("##   ##   ##    ##   ##     ##      ##      ##   ##   ##  ##   ##   ##      ##", color="b")
+    TO.output("##   ##   ##    ##   ##             ##      ##   ##   ##  ##   ##   ##      ##", color="b")
+    TO.output("## ##     ## ## ##     ## ##        ##      ## ##     ##  ##   ## ##        ##", color="b")
+    TO.output("##        ##    ##          ##      ##      ##        ##  ##   ##   ##      ##", color="r")
+    TO.output("##        ##    ##   ##     ##      ##      ##        ##  ##   ##   ##      ##", color="r")
+    TO.output("##        ##    ##     ## ##        ##      ##          ##     ##   ##      ##", color="r")
+welcome_mssg()
+print()
+TO.output("PASTPORT COMMAND LINE INTERFACE version 2.0\n---Authored by Khritish Kumar Behera---", "g")
 time.sleep(1)
 TO.output("Boot up the PASTPORT application by specifying the directory location.")
 location = ""
@@ -12,11 +22,11 @@ while True:
     if location == "q":
         exit()
     if not os.path.exists(location):
-        TO.output(message="Invalid location detected !!!, a valid location is essential to boot up", color='r')
+        TO.output(message="\u26a0  Invalid location detected !!!, a valid location is essential to boot up", color='r')
         print()
         TO.output(message="To terminate the application, press 'q'", color="red")
     else:
-        TO.output(message="Pastport Boot up successful !!!", color="g")
+        TO.output(message="\u2705  Pastport Boot up successful !!!", color="g")
         break
 
 while True:
@@ -61,7 +71,7 @@ while True:
         TO.output(message="checkout 1", color="b")
         print()
     elif commands[0] == "init":
-        pass
+        init.pastport_init(location=location)
     elif commands[0] == "status":
         pass
     elif commands[0] == "commit":

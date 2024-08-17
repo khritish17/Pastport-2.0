@@ -1,0 +1,61 @@
+import os 
+import terminal_output as to
+import shutil
+
+success_status = True
+def pastport_init(location):
+    # make sure the location is valid
+    location = os.path.abspath(location)
+    if not os.path.exists(location):
+        to.output(message="\u26a0  Invalid location detected", color="r")
+        exit()
+    
+    # create the pastport metadata directory and inside its subdirectory
+    create_metadata(location=location)
+    if success_status:
+        to.output(message="\u2705  Pastport Successfully Initialized", color="g")
+
+def create_metadata(location):
+    global success_status
+    try:
+        directory_file_list = os.listdir(location)
+        files_list = []
+        directory_list = []
+        for ele in directory_file_list:
+            if os.path.isfile(location+f"\{ele}"):
+                files_list.append(ele)
+            elif os.path.isdir(location + f"\{ele}"):
+                directory_list.append(ele)
+        
+        # recursivly create pastport metadata file inside subdirectories
+        for directory in directory_list:
+            if directory != "pastport\u00b6":
+                create_metadata(location=location + f"\{directory}")
+        os.mkdir(location + "\pastport\u00b6")
+        # create the global track file for current working directory
+        # create a copy of each file in pastport for commit 0
+        # for commit 0 of each file, 
+        directory_name = os.path.basename(location)
+        with open(location + f"\pastport\u00b6\{directory_name}.track","w") as global_track_file:
+            # global track file structure: <commit id>\u00b6<files in csv format>
+            # e.g.: 0\u00b6file1.cpp,file2.c,file3.py
+            global_track_file.write(f"0\u00b6"+",".join(files_list))
+
+        for file in files_list:
+            # keep a copy of the initial version of the file inside pastport
+            shutil.copy2(src=location + f"\{file}",dst=location + f"\pastport\u00b6\{file}")
+            # generate its track_file
+            file_name_with_extension = os.path.basename(location + f"\pastport\u00b6\{file}")
+            file_name, extension = os.path.splitext(file_name_with_extension)
+            # with open(location + f"\pastport\u00b6\{file_name}_{extension}.track", "w") as track_file:
+            #     commit_data = None
+            #     """
+            #         [1] [done] First make the function to return commit data directly for a file and not just for lines
+            #         [2] Make the strcture for track files, how commit data will be written
+            #     """
+            #     track_file.write(f"0\u00b6")
+    except:
+        to.output(message="\u26a0  PASTPORT is already initialized in this directory", color="r")
+        success_status = False
+
+     

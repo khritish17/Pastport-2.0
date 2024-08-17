@@ -1,4 +1,9 @@
-def LCS(old_line, new_line):
+def LongestCommonSubsequences(old_line, new_line):
+    '''
+        [1] It finds the longest common consequences between the old and new line
+        [2] Generates the commit data, such that new line is generated from old line and commit data
+        returns LCS, commit data
+    '''
     old_line = old_line.split(" ")
     new_line = new_line.split(" ")
 
@@ -34,5 +39,3 @@ def LCS(old_line, new_line):
         insertion.pop(new_index)
     commit_data_line = [insertion, deletion]
     return lcs, commit_data_line
-
-# print(LCS(old_line="printed new line", new_line="new line is printed"))
