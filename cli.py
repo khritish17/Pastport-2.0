@@ -2,6 +2,7 @@ import terminal_output as TO
 import time
 import os
 import init
+import commit
 def welcome_mssg():
     TO.output("## ##        ##        ## ##     ## ## ##   ## ##       ##     ## ##     ## ## ##", color="b")
     TO.output("##   ##   ##    ##   ##     ##      ##      ##   ##   ##  ##   ##   ##      ##", color="b")
@@ -28,6 +29,9 @@ while True:
     else:
         TO.output(message="\u2705  Pastport Boot up successful !!!", color="g")
         break
+
+# converting the location into absloute location
+location = os.path.abspath(location)
 
 while True:
     commands = input("pastport >>> ")
@@ -75,7 +79,29 @@ while True:
     elif commands[0] == "status":
         pass
     elif commands[0] == "commit":
-        pass
+        # commit has three commands: commit <file/flag> <message>
+        # make sure pastport is already initialized
+        directory_file_list = os.listdir(location)
+        if not ("pastport\u00b6" in directory_file_list and os.path.isdir(location + "/pastport\u00b6")):
+            TO.output(message="\u26a0  Pastport is not initialized in this directory !!!", color="r")
+            continue
+        # commit flags
+        try:
+            file_flag = commands[1]
+            if file_flag.lower() == "-a":
+                # represents all files need to be commited, every file in the directory and sub-directories
+                print("all file")
+            elif file_flag.lower() == "-p":
+                # only commit the files whose path are provided
+                print("file path is provided")
+            elif file_flag.lower() == "-f":
+                # only commit those file whose file name are provided, and are in the root directory
+                print("direct file is provided in the root directory")
+            else:
+                TO.output(message="\u26a0  Invalid flags in commit, !!!", color="r")
+        except:
+            # TO.output(message="\u26a0  Provide which file(s)(in comma seperated format) that needs to commited and optional commit message", color='r')
+            TO.output(message="\u26a0  Invalid command, missing commit flags !!!", color="r")
     elif commands[0] == "log":
         pass
     elif commands[0] == "checkout":
