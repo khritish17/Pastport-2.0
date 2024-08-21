@@ -22,10 +22,12 @@ def commit_data_file(old_file_location, new_file_location):
     for i in range(max(len(old_file_lines), len(new_file_lines))):
         try:
             old_line = old_file_lines[i]
+            old_line = old_line.rstrip("\n")
         except:
             old_line = ""
         try:
             new_line = new_file_lines[i]
+            new_line = new_line.rstrip("\n")
         except:
             new_line = ""
         _, cd = LCS.LongestCommonSubsequences(old_line=old_line, new_line=new_line)

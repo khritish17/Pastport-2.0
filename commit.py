@@ -1,7 +1,7 @@
 import os
 import terminal_output as to
 import commit_data_file as cdf
-def pastport_commit(file_location):
+def pastport_commit(file_location, commit_message = "Untitled Commit Message"):
     # assuming the file location is valid
     # assuming the commit_is is valid and not ambigious
     # we need the commit data, which required the old file and the new file
@@ -14,7 +14,6 @@ def pastport_commit(file_location):
     
     # commit data line wise
     commit_data = cdf.commit_data_file(old_file_location=old_file_location, new_file_location=new_file_location)
-    print(commit_data)
     track_file = open(track_file_location, "r")
     track_lines = track_file.readlines()
     track_file.close()
@@ -40,6 +39,6 @@ def pastport_commit(file_location):
                 track_file.write(f"\u00b6{del_word}\u00b6{del_index}")
 
         # end the line with new line character
-        track_file.write("\n")
+        track_file.write(f"\u00b6{commit_message}\n")
 
 # pastport_commit(r"C:\Users\HP\Desktop\test\New Text Document.txt")# 
