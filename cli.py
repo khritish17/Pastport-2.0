@@ -6,13 +6,22 @@ import commit
 import shlex
 
 def welcome_mssg():
+    t = 0.2
+    time.sleep(t)
     TO.output("## ##        ##        ## ##     ## ## ##   ## ##       ##     ## ##     ## ## ##", color="b")
+    time.sleep(t)
     TO.output("##   ##   ##    ##   ##     ##      ##      ##   ##   ##  ##   ##   ##      ##", color="b")
+    time.sleep(t)
     TO.output("##   ##   ##    ##   ##             ##      ##   ##   ##  ##   ##   ##      ##", color="b")
+    time.sleep(t)
     TO.output("## ##     ## ## ##     ## ##        ##      ## ##     ##  ##   ## ##        ##", color="b")
+    time.sleep(t)
     TO.output("##        ##    ##          ##      ##      ##        ##  ##   ##   ##      ##", color="r")
+    time.sleep(t)
     TO.output("##        ##    ##   ##     ##      ##      ##        ##  ##   ##   ##      ##", color="r")
+    time.sleep(t)
     TO.output("##        ##    ##     ## ##        ##      ##          ##     ##   ##      ##", color="r")
+    time.sleep(t+0.2)
 
 welcome_mssg()
 print()
@@ -175,7 +184,14 @@ while True:
     elif commands[0] == "log":
         pass
     elif commands[0] == "checkout":
-        pass
+        file_flag = commands[1]
+        if file_flag.lower() == "-p":
+            # this represents that the file(s) whose path is given will be reverted back to its commit id version 
+            pass
+        elif file_flag.lower() == "-f":
+            pass
+        else:
+            TO.output(message="\u26a0  Invalid flags in checkout command !!!", color="r")
     else:
         TO.output(message="Invalid Command, press 'h' for help", color="r")
 

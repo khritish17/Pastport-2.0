@@ -7,7 +7,7 @@ def commit_data_file(old_file_location, new_file_location):
     new_file_location = os.path.abspath(new_file_location)
     
     if (not os.path.exists(old_file_location)) or (not os.path.exists(new_file_location)):
-        to.output(message="\u26a0  Invalid file location detected !!!",color="r")
+        to.output(message="\u26a0  Invalid file location detected [cdf] !!!",color="r")
         exit()
 
     old_file = open(old_file_location, "r")

@@ -1,4 +1,5 @@
 import lcs as l
+import os
 
 def reconstruct(old_line, commit_data_line):
     """
@@ -20,8 +21,26 @@ def reconstruct(old_line, commit_data_line):
             constructed_line[i] = old_line.pop(0)
     return " ".join(constructed_line)
 
-    
+def reconstruct_file(old_file_location, commit_data):
+    # assuming the old_file_location is valid 
+    # assuming commit_data is valid in reference with the file
+    new_file = []
+    old_file = open(old_file_location, "r")
+    old_lines = old_file.readlines()
+    old_file.close()
+    for i in range(max(len(old_lines), len(commit_data))):
+        try:
+            old_line = old_lines[i]
+        except:
+            old_line = ""
+        try:
+            commit_data_line = commit_data[i]
+        except:
+            print("Error in line 37: recontruct.py")
+        constructed_line = reconstruct(old_line=old_line, commit_data_line=commit_data_line)
+        new_file.append(constructed_line)
+    return new_file
 
 # o, n = "Hey there whatsup man", "Hey there whatsup man"
-# lcs, cd = l.LCS(old_line=o, new_line=n)
+# lcs, cd = l.LongestCommonSubsequences(old_line=o, new_line=n)
 # print(reconstruct(old_line=o, commit_data_line=cd))
