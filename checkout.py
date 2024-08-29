@@ -89,7 +89,7 @@ def extract_commit_data(tracked_line):
         cd[line_number] = [insertion, deletion]
     return cd
 
-pastport_checkout(r"C:\Users\HP\Desktop\test\New Text Document.txt", 4)
+# pastport_checkout(r"C:\Users\HP\Desktop\test\New Text Document.txt", 4)
 # "C:\Users\HP\Desktop\test\New Rich Text Document (2).rtf"
 # pastport_checkout(r"C:\Users\HP\Desktop\test\New Rich Text Document (2).rtf", 4)
 # "C:\Users\HP\Desktop\test\New Text Document (2).txt"

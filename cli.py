@@ -91,6 +91,10 @@ while True:
         print()
     elif commands[0] == "init":
         init.pastport_init(location=location)
+    elif commands[0] == "add":
+        # performs the staging mechanism
+        # create the .stage file, and add the file(s)
+        pass
     elif commands[0] == "status":
         pass
     elif commands[0] == "commit":

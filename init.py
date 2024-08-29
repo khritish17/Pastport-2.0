@@ -2,6 +2,7 @@ import os
 import terminal_output as to
 import shutil
 import commit_data_file as cdf
+import stage
 
 success_status = True
 def pastport_init(location):
@@ -52,6 +53,7 @@ def create_metadata(location):
             file_name, extension = os.path.splitext(file_name_with_extension)
             with open(location + f"/pastport\u00b6/{file_name}_{extension[1:]}.track", "w") as track_file:
                 track_file.write(f"0\u00b6Inititation of pastport\n")
+        stage.pastport_stage(pastport_root_location=location, init=True)
     except:
         to.output(message="\u26a0  [WARNING] PASTPORT has already been initialized in this directory", color="r")
         success_status = False
