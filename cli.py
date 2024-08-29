@@ -4,6 +4,7 @@ import os
 import init
 import commit
 import shlex
+import stage
 import checkout as chk
 
 def welcome_mssg():
@@ -94,6 +95,14 @@ while True:
     elif commands[0] == "add":
         # performs the staging mechanism
         # create the .stage file, and add the file(s)
+        try:
+            flag = commands[1].strip().lower()
+            if flag == "-a":
+                stage.pastport_stage(pastport_root_location=location, flag="-a", init=False)
+            elif flag == "-p":
+                stage.pastport_stage(pastport_root_location=location, flag="-p", init=False)
+        except:
+            TO.output(message="\u26a0  Missing flags in add command !!!", color="r")
         pass
     elif commands[0] == "status":
         pass
@@ -106,7 +115,7 @@ while True:
             continue
         # commit flags
         try:
-            file_flag = commands[1]
+            file_flag = commands[1].strip().lower()
             if file_flag.lower() == "-a":
                 commit_message = input("commit message >>>> ")
                 if not commit_message:
