@@ -114,87 +114,50 @@ while True:
             TO.output(message="\u26a0  PASTPORT has not been initialized in this directory !!!", color="r")
             continue
         # commit flags
+        commit_message = "Untitled Commit Message"
         try:
             file_flag = commands[1].strip().lower()
-            if file_flag.lower() == "-a":
-                commit_message = input("commit message >>>> ")
+            if file_flag == "-m":
+                try:
+                    commit_message = commands[2]
+                except:
+                    TO.output(message="\u26a0  [WARNING] Commit message was expected!!!, set to default message", color="r")
                 if not commit_message:
-                    commit_message = "Untitled commit"
-                # represents all files need to be commited, every file in the directory and sub-directories
-                def commit_file_all(path):
-                    dir_file_list = os.listdir(path)
-                    directories = []
-                    files = []
-                    for dir_file in dir_file_list:
-                        if os.path.isfile(path + f"/{dir_file}"):
-                            files.append(dir_file)
-                        elif dir_file != "pastport\u00b6" and os.path.isdir(path + f"/{dir_file}"):
-                            directories.append(dir_file)
-                    # first commit the files
-                    for file in files:
-                        commit.pastport_commit(file_location = path + f"/{file}", commit_message=commit_message)
-                    for dir_ in directories:
-                        commit_file_all(path + f"\{dir_}")
-                commit_file_all(path=location)
-                TO.output("\u2705  Files committed successfully", color="g")
-            elif file_flag.lower() == "-p":
-                # only commit the files whose path are provided
-                # these file locations are comma seperated
-                # make sure that paths are inside the parent directory
-                try:
-                    paths = commands[2]
-                    paths = paths.split(",")
-                    # for loc in paths:
-                    for i in range(len(paths)):
-                        loc = paths[i]
-                        loc = os.path.abspath(loc)
-                        if not os.path.isfile(loc):
-                            TO.output(message=f"\u26a0  [Error]: The specified path does not correspond to a file \n {loc}", color="r")
-                            continue
-                        if not os.path.exists(loc):
-                            TO.output(message=f"\u26a0  [Error]: Invalid path detected.\nFile path: '{loc}'", color="r")
-                            continue
-                        if location not in loc:
-                            TO.output(message=f"\u26a0  Error: The path does not reside within the working PASTPORT directory\nCurrent working directory: {location}\nFile path:'{loc}'", color="r")
-                            continue
-                        base_name = os.path.basename(loc)
-                        TO.output(f"[{i + 1}] File: {base_name}\nPath: {loc}")
-                        commit_message = input(f"commit message >>>> ")
-                        print()
-                        if not commit_message:
-                            commit_message = "Untitled commit"
-                        commit.pastport_commit(file_location=loc, commit_message=commit_message)
-                    TO.output("\u2705  Commit files successful", color="g")
-
-                except:
-                    TO.output(message="\u26a0  [Error]: Invalid command!!!", color="r")
-                    continue
-            elif file_flag.lower() == "-f":
-                # only commit those file whose file name are provided, and are in the root directory
-                try:
-                    files = commands[2]
-                    files = files.split(",")
-                    for i in range(len(files)):
-                        file = files[i]
-                        if not os.path.exists(location + f"/{file}"):
-                            TO.output(message=f"\u26a0  [WARNING] File #{i + 1} does not exist\nFile:{file}\nPath:{location}/{file}", color="r")
-                            continue
-                        TO.output(f"[{i + 1}] File: {file}\nPath: {location}/{file}")
-                        commit_message = input(f"commit message >>>> ")
-                        print()
-                        if not commit_message:
-                            commit_message = "Untitled commit"
-                        commit.pastport_commit(file_location=location + f"/{file}", commit_message=commit_message)
-                    TO.output("\u2705  Files committed successfully", color="g")
-                except:
-                    TO.output(message="\u26a0  File(s) not found!!!", color="r")
-                    continue
-
+                    commit_message = "Untitled Commit Message"
+                    TO.output(message="\u26a0  [WARNING] Empty commit message provided, set to default message", color="r")
             else:
-                TO.output(message="\u26a0  Invalid flags in commit command !!!", color="r")
+                TO.output(message="\u26a0  Invalid commit flags !!!", color="r")
+                continue
         except:
             # TO.output(message="\u26a0  Provide which file(s)(in comma seperated format) that needs to commited and optional commit message", color='r')
-            TO.output(message="\u26a0  Invalid command: missing commit flags !!!", color="r")
+            commit_message = input("commit message >>>> ")
+        commit_message = commit_message.strip()
+        file_paths_commit_ids = {}
+        # get the files paths and commit ids from .stage file
+        line = ""
+        with open(location + "/pastport\u00b6/pastport.stage", "r") as stage_file:
+            lines = stage_file.readlines()
+            if not lines:
+                TO.output(message="Stage the files before commit, use add command", color="r")
+                continue
+            line = lines[0]
+            stage_data = line.split("\u00b6")
+            for i in range(1, len(stage_data), 2):
+                path = stage_data[i]
+                c_id = stage_data[i+1]
+                file_paths_commit_ids[os.path.abspath(path)] = c_id
+        
+        for file_path, commit_id in file_paths_commit_ids.items():
+            commit.pastport_commit(file_location=file_path, commit_message=commit_message)
+        # copy the content of .stage file to .stagelog  
+        with open(location + "/pastport\u00b6/pastport.stagelog", "a") as stagelog_file:
+            stagelog_file.write(line)
+            stagelog_file.write("\n")
+        # empty .stage file
+        stage_file = open(location + "/pastport\u00b6/pastport.stage", "w")
+        stage_file.close()
+        
+
     elif commands[0] == "log":
         pass
     elif commands[0] == "checkout":
