@@ -101,6 +101,7 @@ while True:
                 stage.pastport_stage(pastport_root_location=location, flag="-a", init=False)
             elif flag == "-p":
                 stage.pastport_stage(pastport_root_location=location, flag="-p", init=False)
+            TO.output(message="\u2705  Files added successfully for staging", color="g")
         except:
             TO.output(message="\u26a0  Missing flags in add command !!!", color="r")
         pass
@@ -156,6 +157,7 @@ while True:
         # empty .stage file
         stage_file = open(location + "/pastport\u00b6/pastport.stage", "w")
         stage_file.close()
+        TO.output(message="\u2705  Commit operation successfull", color="g")
         
 
     elif commands[0] == "log":

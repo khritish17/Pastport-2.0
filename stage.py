@@ -22,7 +22,14 @@ def pastport_stage(pastport_root_location, flag = "-a", init = False):
                     TO.output(message="\u26a0  [WARNING] Invalid file path detected!!!", color="r")
         elif flag == "-a":
             # recursively get all file and its commit data
-            print("all files")
+            def stage_recursion(loc):
+                dir_file_list = os.listdir(loc)
+                for dir_file in dir_file_list:
+                    if os.path.isfile(loc + f"\{dir_file}"):
+                        file_paths_commit_ids[loc + f"\{dir_file}"] = get_last_commit_id(loc + f"\{dir_file}") + 1
+                    elif dir_file != "pastport\u00b6":
+                        stage_recursion(loc + f"\{dir_file}")
+            stage_recursion(pastport_root_location)
             pass
         
         # open the .stagelog file and the get the last stage id
