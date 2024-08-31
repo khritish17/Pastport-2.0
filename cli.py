@@ -153,6 +153,7 @@ while True:
         # copy the content of .stage file to .stagelog  
         with open(location + "/pastport\u00b6/pastport.stagelog", "a") as stagelog_file:
             stagelog_file.write(line)
+            stagelog_file.write(f"\u00b6/{commit_message}")
             stagelog_file.write("\n")
         # empty .stage file
         stage_file = open(location + "/pastport\u00b6/pastport.stage", "w")
@@ -185,31 +186,37 @@ while True:
                     continue
                 i += 1
                 commit_id = int(paths_commit_ids[i])
-                chk.pastport_checkout(new_file_location=path, commit_id=commit_id)
-        elif file_flag.lower() == "-f":
-            files_commit_ids = commands[2].split(",")
-            if len(files_commit_ids) % 2 != 0:
-                TO.output(message="\u26a0  Files and commit ids are not in pairs", color="r")
+                if chk.pastport_checkout(new_file_location=path, commit_id=commit_id):
+                    TO.output(f"\u2705  File: {path}, checkedout successfully", color="g")
+                else:
+                    TO.output(f"\u26a0  File: {path}, checkout attempt unsuccessfull", color="r")
+        elif file_flag.lower() == "-s":
+            # stage checkout
+            try:
+                stage_id = int(commands[2])
+            except:
+                TO.output(message=f"\u26a0  [Error] a valid stage id is required", color="r")
                 continue
-            i = -1
-            while i < len(files_commit_ids) - 1:
-                i += 1
-                file = files_commit_ids[i]
-                path = location + f"/{file}"
-                path = os.path.abspath(path)
-                if not os.path.exists(path):
-                    TO.output(message=f"\u26a0  [WARNING] File does not exist, skiping these path!!!\nFile: {path}", color="r")
-                    i += 1
+            # get the file path and commit id from .stagelog file
+            stage_data = None
+            with open(location + "/pastport\u00b6/pastport.stagelog", "r") as stagelog_file:
+                lines = stagelog_file.readlines()
+                try:
+                    stage_line = lines[stage_id].rstrip("\n")
+                except:
+                    TO.output(message=f"\u26a0  [Error] Invalid stage id provided", color="r")
                     continue
-                if location not in path:
-                    TO.output(message=f"\u26a0  [Error] File does not reside within the working PASTPORT directory, skiping these path!!!\nFile: {path}", color="r")
-                    i += 1
-                    continue
-                i += 1
-                commit_id = int(files_commit_ids[i])
-                chk.pastport_checkout(new_file_location=path, commit_id=commit_id)
+                stage_data = stage_line.split("\u00b6")
+            for i in range(1, len(stage_data) - 1, 2):
+                path = stage_data[i]
+                commit_id = int(stage_data[i + 1])
+                if chk.pastport_checkout(new_file_location=path, commit_id=commit_id):
+                    TO.output(f"\u2705  File: {path}, checkedout successfully", color="g")
+                else:
+                    TO.output(f"\u26a0  File: {path}, checkout attempt unsuccessfull", color="r")
         else:
             TO.output(message="\u26a0  Invalid flags in checkout command !!!", color="r")
+            continue
     else:
         TO.output(message="\u26a0  Invalid Command, press 'h' for help", color="r")
 

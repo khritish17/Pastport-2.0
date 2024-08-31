@@ -22,6 +22,9 @@ def pastport_commit(file_location, commit_message = "Untitled Commit Message"):
     else:
         # trying to commit new files
         file_name, ext_name = os.path.splitext(os.path.basename(new_file_location))
+        files_dirs = os.listdir(os.path.dirname(new_file_location))
+        if "pastport\u00b6" not in files_dirs:
+            os.mkdir(os.path.dirname(new_file_location) + "/pastport\u00b6")
         shutil.copy2(src=new_file_location, dst=os.path.dirname(new_file_location) + f"/pastport\u00b6/{file_name}{ext_name}")
         track_file_location = os.path.dirname(new_file_location) + f"/pastport\u00b6/{file_name}_{ext_name[1:]}.track"
         with open(track_file_location, "w") as track_file:

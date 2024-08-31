@@ -12,8 +12,8 @@ def pastport_checkout(new_file_location, commit_id):
             deleted_checkout(old_file_location=old_file_location, commit_id=commit_id)
         else:
             TO.output(message=f"[Error] Unknown and Untracked file detected !!!\nFile location: {new_file_location}", color="r")
-            return 
-    TO.output(f"\u2705  Checkout successfull!!!\nFile: {new_file_location}", color="g")
+            return False
+    return True
 
 def deleted_checkout(old_file_location, commit_id):
     file_name_with_extension = os.path.basename(old_file_location)
