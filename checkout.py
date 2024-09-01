@@ -1,21 +1,26 @@
 import os
 import reconstruct as re
 import terminal_output as TO
+import shutil
 
 def pastport_checkout(new_file_location, commit_id):
+    file_name_with_extension = os.path.basename(new_file_location)
+    old_file_location = os.path.dirname(new_file_location) + f"/pastport\u00b6/{file_name_with_extension}"
     if os.path.exists(new_file_location):
-        normal_checkout(new_file_location=new_file_location, commit_id=commit_id)
+        normal_checkout(new_file_location=new_file_location, old_file_location=old_file_location,commit_id=commit_id)
     else:
-        file_name_with_extension = os.path.basename(new_file_location)
-        old_file_location = os.path.dirname(new_file_location) + f"/pastport\u00b6/{file_name_with_extension}"
+        
         if os.path.exists(old_file_location):
-            deleted_checkout(old_file_location=old_file_location, commit_id=commit_id)
+            deleted_checkout(old_file_location=old_file_location, new_file_location=new_file_location, commit_id=commit_id)
         else:
             TO.output(message=f"[Error] Unknown and Untracked file detected !!!\nFile location: {new_file_location}", color="r")
             return False
     return True
 
-def deleted_checkout(old_file_location, commit_id):
+def deleted_checkout(old_file_location,new_file_location, commit_id):
+    if commit_id == 0:
+        shutil.copy2(src=old_file_location, dst=new_file_location)
+        return
     file_name_with_extension = os.path.basename(old_file_location)
     file_name, extension = os.path.splitext(file_name_with_extension)
     track_file_location = os.path.dirname(old_file_location) + f"/{file_name}_{extension[1:]}.track"
@@ -37,7 +42,10 @@ def deleted_checkout(old_file_location, commit_id):
         for new_line in new_file_lines:
             new_file.write(new_line + "\n")
 
-def normal_checkout(new_file_location, commit_id):
+def normal_checkout(new_file_location, old_file_location, commit_id):
+    if commit_id == 0:
+        shutil.copy2(src=old_file_location, dst=new_file_location)
+        return
     new_file_location = os.path.abspath(new_file_location)
     file_name_with_extension = os.path.basename(new_file_location)
     file_name, extension = os.path.splitext(file_name_with_extension)

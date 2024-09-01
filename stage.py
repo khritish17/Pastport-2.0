@@ -59,7 +59,7 @@ def pastport_stage(pastport_root_location, flag = "-a", init = False):
             stage_file.write(stage_id)
             for path, cm_id in file_paths_commit_ids.items():
                 stage_file.write(f"\u00b6{path}\u00b6{cm_id}")
-            stage_file.write("\n")
+            stage_file.write("\u00b6Pastport Initiation\n")
         # just create an empty .stage file indicating commit has been made (ideally its made upon inititation in init.py)
         # no need to commit through the function
         stage_file = open(pastport_root_location + "/pastport\u00b6/pastport.stage", "w")

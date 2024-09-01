@@ -6,6 +6,7 @@ import commit
 import shlex
 import stage
 import checkout as chk
+import path_shorten as ps
 
 def welcome_mssg():
     t = 0.1
@@ -153,7 +154,7 @@ while True:
         # copy the content of .stage file to .stagelog  
         with open(location + "/pastport\u00b6/pastport.stagelog", "a") as stagelog_file:
             stagelog_file.write(line)
-            stagelog_file.write(f"\u00b6/{commit_message}")
+            stagelog_file.write(f"\u00b6{commit_message}")
             stagelog_file.write("\n")
         # empty .stage file
         stage_file = open(location + "/pastport\u00b6/pastport.stage", "w")
@@ -162,7 +163,21 @@ while True:
         
 
     elif commands[0] == "log":
-        pass
+        with open(location + "/pastport\u00b6/pastport.stagelog", "r") as stagelog_file:
+                lines = stagelog_file.readlines()
+                log_data = {}
+                for line in lines:
+                    stage_data = line.split("\u00b6")
+                    stage_id = stage_data[0]
+                    commit_mssg = stage_data[-1].strip("\n")
+                    file_paths_stage = []
+                    for j in range(1, len(stage_data) - 1, 2):
+                        file_paths_stage.append(stage_data[j])
+                    paths_short = ps.path_shorten(file_paths_stage)
+                    log_data[stage_id] = commit_mssg
+                TO.output(message="{:20}\t{:20}\t{:20}".format("stage_id", "commit_mssg", "file(s)"))
+                for stage_id, commit_mssg in log_data.items():
+                    TO.output(message="{:20}\t{:20}\t{:20}".format(stage_id, commit_mssg, ' | '.join(paths_short)))
     elif commands[0] == "checkout":
         file_flag = commands[1]
         if file_flag.lower() == "-p":
