@@ -44,7 +44,9 @@ class PathShortener:
             for c_node in node.sub_dir.values():
                 f(c_node, cur_path)
             if not node.sub_dir.values():
-                self.res.append(cur_path[2:])
+                # self.res.append(cur_path[2:])
+                if cur_path:
+                    self.res.append(cur_path[2:4] + ">>..."+ cur_path[4:])
         f(self.root, "")
         return self.res
 

@@ -7,6 +7,7 @@ import shlex
 import stage
 import checkout as chk
 import path_shorten as ps
+import status
 
 def welcome_mssg():
     t = 0.1
@@ -107,7 +108,14 @@ while True:
             TO.output(message="\u26a0  Missing flags in add command !!!", color="r")
         pass
     elif commands[0] == "status":
-        pass
+        untracked_files, deleted_files, modified_files =status.pastport_status(pastport_location=location)
+        short_untrack_files = ps.path_shorten(paths=untracked_files)
+        short_del_files = ps.path_shorten(paths=deleted_files)
+        short_mod_files = ps.path_shorten(paths=modified_files)
+        print()
+        TO.output(message=f"Untracked File(s): {' | '.join(short_untrack_files)}", color="g")
+        TO.output(message=f"Deleted Files(s): {' | '.join(short_del_files)}", color="r")
+        TO.output(message=f"Modified File(s): {' | '.join(short_mod_files)}", color="p")
     elif commands[0] == "commit":
         # commit has three commands: commit <file/flag> <message>
         # make sure pastport is already initialized
