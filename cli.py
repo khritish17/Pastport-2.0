@@ -171,6 +171,12 @@ while True:
         
 
     elif commands[0] == "log":
+        try:
+            short_flag = commands[1]
+            if short_flag not in ["-lp", "-sp"]:
+                TO.output(message="\u26a0  [WARNING] Invalid flags in log command !!!", color="r")
+        except:
+            short_flag = "-lp"
         with open(location + "/pastport\u00b6/pastport.stagelog", "r") as stagelog_file:
                 lines = stagelog_file.readlines()
                 log_data = {}
@@ -181,13 +187,21 @@ while True:
                     file_paths_stage = []
                     for j in range(1, len(stage_data) - 1, 2):
                         file_paths_stage.append(stage_data[j])
-                    paths_short = ps.path_shorten(file_paths_stage)
-                    log_data[stage_id] = commit_mssg
+                    if short_flag == "-sp":
+                        paths_short = ps.path_shorten(file_paths_stage)
+                    else:
+                        paths_short = file_paths_stage
+                    log_data[stage_id] = [commit_mssg, paths_short]
                 TO.output(message="{:20}\t{:20}\t{:20}".format("stage_id", "commit_mssg", "file(s)"))
-                for stage_id, commit_mssg in log_data.items():
+                for stage_id, cid_paths in log_data.items():
+                    commit_mssg, paths_short = cid_paths 
                     TO.output(message="{:20}\t{:20}\t{:20}".format(stage_id, commit_mssg, ' | '.join(paths_short)))
     elif commands[0] == "checkout":
-        file_flag = commands[1]
+        try:
+            file_flag = commands[1]
+        except:
+            TO.output(message="\u26a0  Invalid checkout command, flags not provided !!!", color="r")
+            continue
         if file_flag.lower() == "-p":
             # this represents that the file(s) whose path is given will be reverted back to its commit id version 
             paths_commit_ids = commands[2].split(",")

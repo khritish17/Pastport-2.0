@@ -1,6 +1,7 @@
 import lcs as LCS
 import os
 import terminal_output as to 
+import reconstruct
 
 def commit_data_file(old_file_location, new_file_location):
     old_file_location = os.path.abspath(old_file_location)

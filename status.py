@@ -42,9 +42,6 @@ def pastport_status(pastport_location):
                     constructed_file_lines = reconstruct.reconstruct_file(old_file_location=old_file_location, commit_data=commit_data)
                 with open(new_file_location, "r") as new_file:
                     new_file_lines = new_file.readlines()
-                # print(new_file_location)
-                # print(constructed_file_lines)
-                # print(new_file_lines)
                 if not check_equal(new_file_lines, constructed_file_lines):
                     modified_files.append(new_file_location)
                 

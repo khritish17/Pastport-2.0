@@ -13,6 +13,10 @@ class PathShortener:
         for path in self.paths:
             self.addPath(path)
     
+    def destroy(self):
+        self.root = PathNode()
+        self.root.dir_name = "Root"
+
     def addPath(self, path):
         path_list = []
         # print(path)
@@ -52,4 +56,7 @@ class PathShortener:
 
 def path_shorten(paths):
     PS = PathShortener(paths=paths)
-    return PS.getPaths()
+    short_paths = PS.getPaths()
+    PS.destroy()
+    return short_paths
+

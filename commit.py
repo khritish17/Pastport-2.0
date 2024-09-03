@@ -25,12 +25,18 @@ def pastport_commit(file_location, commit_message = "Untitled Commit Message"):
         files_dirs = os.listdir(os.path.dirname(new_file_location))
         if "pastport\u00b6" not in files_dirs:
             os.mkdir(os.path.dirname(new_file_location) + "/pastport\u00b6")
-        shutil.copy2(src=new_file_location, dst=os.path.dirname(new_file_location) + f"/pastport\u00b6/{file_name}{ext_name}")
+        old_file_location = os.path.dirname(new_file_location) + f"/pastport\u00b6/{file_name}{ext_name}"
+        shutil.copy2(src=new_file_location, dst=old_file_location)
         track_file_location = os.path.dirname(new_file_location) + f"/pastport\u00b6/{file_name}_{ext_name[1:]}.track"
-        with open(track_file_location, "w") as track_file:
-            track_file.write(f"0\u00b6Inititation of pastport\n")
-        last_commit_id = 0
-        return 
+        # with open(track_file_location, "w") as track_file:
+        #     track_file.write(f"0\u00b6Inititation of pastport\n")
+        track_file = open(track_file_location, "w")
+        track_file.close()
+        last_commit_id = -1
+        commit_message = "Inititation of pastport"
+        commit_data = cdf.commit_data_file(old_file_location=new_file_location, new_file_location=new_file_location)
+        print(commit_data)
+        # return 
     
     with open(track_file_location, "a") as track_file:
         # write the commit id
