@@ -17,49 +17,49 @@ def print_message(count = 0, command = "", description = "", sub_commands_descri
 def help():
     # INIT command
     command = "init"
-    description = "Initializes the PASTPORT system, creates the necessary directory structure and tracking files for version control"
+    description = "Sets up the PASTPORT system, creates required directories, and configures version control tracking"
     example = ["init"]
     print_message(count = 1,command=command, description=description, example=example)
     
     # ADD command
     command = "add"
-    description = "Before making a commit, file(s) which are supposed to be commited, needs to be commited in a batch so that during checkout one does not have to worry about individual files that need to checkout manually"
+    description = "To streamline the commit process, group files that need to be committed together. This ensures that during checkout, all related files are retrieved automatically, eliminating the need for manual selection"
     sub_commands_description = {}
-    sub_commands_description["add -a"] = "Stage every file(s) in the current directory and all its sub directories"
-    sub_commands_description["add -p"] = "Stage only those file(s) whose location has been provided"
+    sub_commands_description["add -a"] = "Add all files in the current directory and its subdirectories for grouping"
+    sub_commands_description["add -p"] = "Add only the specified files for grouping"
     example = ["add -a", "add -p"]
     print_message(count = 2,command=command, description=description, sub_commands_description=sub_commands_description, example=example)
 
     # STATUS command
     command = "status"
-    description = "Provides functionality to check the status of the working directory, identifying modified, untracked, and deleted files"
+    description = "Displays the status of files in the working directory and its subdirectories, highlighting modified, untracked, and deleted files"
     example = ["status"]
     print_message(count = 3, command=command, description=description, example=example)
 
     # COMMIT command
     command = "commit"
-    description = "Saves the current version of the file(s) which are staged"
+    description = "Commits the staged files to the repository"
     sub_commands_description = {}
-    sub_commands_description['commit'] = "Commits the current version of the staged file, asks for commit message later"
-    sub_commands_description['commit -m "<Your commit message>"'] = "Commits the current version of the staged file, while commit message is provided within the double quotes"
+    sub_commands_description['commit'] = "Commits the staged changes to the repository, prompting for a commit message afterward"
+    sub_commands_description['commit -m "<Your commit message>"'] = "Commits the staged changes to the repository with the provided commit message enclosed in double quotes"
     example = ["add -a", "add -p"]
     print_message(count = 4, command=command, description=description, sub_commands_description=sub_commands_description, example=example)
 
     # LOG command
     command = "log"
-    description = "Displays all those file(s) which are commited, including its stage and commit id, and file(s) which took part in the commit"
+    description = "Shows a list of committed files, including their stage, commit ID, and associated files"
     sub_commands_description = {}
-    sub_commands_description['log'] = "Displays the absolute location of the file(s)"
-    sub_commands_description['log -sp'] = "Displays the shorten location of the file(s)"
-    sub_commands_description['log -lp'] = "Same as 'log' command"
+    sub_commands_description['log'] = "Shows the full path (absolute location) of the files"
+    sub_commands_description['log -sp'] = "Shows a shortened version of the file paths for better readability"
+    sub_commands_description['log -lp'] = "Equivalent to the 'log' command"
     example = ["log", "log -sp", "log -lp"]
     print_message(count = 5, command=command, description=description, sub_commands_description=sub_commands_description, example=example)
 
     # CHECKOUT command
     command = "checkout"
-    description = "Reverts the files to go back to different versions of the file(s)"
+    description = "Restores previous versions of files"
     sub_commands_description = {}
-    sub_commands_description["checkout -s <stage id>"] = "Allows the file(s) used during the given stage id, to revert back to version according tp the commid id used in the stage id"
-    sub_commands_description['checkout -p “<file1 path>, <file1 commit id>, <file2 path>, <file2 commit id>”'] = "Allows individual file(s) irrespective of stage to revert back to the version specified by commit id and file path"
+    sub_commands_description["checkout -s <stage id>"] = "Restores files to a specific version based on the provided stage ID and commit ID"
+    sub_commands_description['checkout -p “<file1 path>, <file1 commit id>, <file2 path>, <file2 commit id>”'] = "Restores individual files to a specified version based on the commit ID and file path"
     example = ["checkout -s 3", 'checkout -p "D:\Codes\Projects\Pastport 2\cli.py,2"']
     print_message(count = 6, command=command, description=description, sub_commands_description=sub_commands_description, example=example)
