@@ -142,3 +142,173 @@ commit_data = commit_data_file(old_file_location, new_file_location)
 # Use the commit_data for further processing or storage within the "passport" system
 ```
 This example demonstrates how to use the commit_data_file function to generate commit data for a file based on its original and modified versions.
+
+---
+### File: cli.py
+This code implements the command-line interface (CLI) for PASTPORT.
+
+#### Initialization:
+- The `welcome_mssg` function displays a welcome message with colored text using the `terminal_output` module.
+- The script prompts the user for the location of the PASTPORT directory. It validates the existence of the directory and exits if not found.
+- The location is converted to an absolute path using `os.path.abspath`.
+
+#### Main Loop:
+- The script enters a loop that continuously prompts the user for commands.
+- User input is split into a list of arguments using shlex.split.
+- The first element is considered the main command, and the remaining elements are arguments.
+
+#### Available Commands
+- **q or quit:** Exits the PASTPORT CLI.
+- **h or help:** Displays help information using the `help.help` function.
+- **init:** Initializes PASTPORT in the specified location using init.pastport_init.
+- **add:**
+  - Supports two flags:
+    -  `-a`: Adds all untracked files in the current directory to the staging area using `stage.pastport_stage`.
+    -  `-p`: Prompts the user for specific files to add to the staging area using `stage.pastport_stage`.
+  -  Displays a success message if files are added successfully.
+- **status**
+  -  Uses `status.pastport_status` to retrieve information about untracked, deleted, and modified files.
+  -  Shortens path lengths using `path_shorten.path_shorten` for better display.
+  -  Prints the status information with colors for easy identification.
+- **commit**
+  - Checks if PASTPORT is already initialized in the directory.
+  -  Supports an optional commit message argument (`-m`).
+  -  Reads the `.stage` file to get file paths and commit IDs for staged files.
+  -  Performs the commit operation for each staged file using `commit.pastport_commit`.
+  -  Copies the staging information to the `.stagelog` file and empties the `.stage` file.
+  -  Displays a success message after a successful commit.
+- **log**
+  -  Supports optional flags:
+    -  `-lp`: Lists all commits in detail (long format).
+    -  `-sp`: Lists commits with shortened paths (short format).
+  -  Reads the `.stagelog` file to retrieve commit history data.
+  -  Presents the commit information in a table format using the `terminal_output` module.
+- **checkout**
+  -  Supports two flags:
+    -  `-p`: Checks out specific files to a particular commit version based on provided paths and commit IDs. Uses `chk.pastport_checkout` for checkout operation.
+    -  `-s`: Checks out the entire working directory to a specific stage version based on the stage ID. Uses `chk.pastport_checkout` for checkout operation.
+  -  Validates user input and handles errors for invalid paths, commit IDs, or stage IDs.
+
+#### Error Handling:
+  - The script displays error messages using the `terminal_output` module with red color for better visibility.
+  - It exits the program if the PASTPORT directory is not found during initialization.
+
+Overall, this code provides a functional CLI for PASTPORT with basic functionalities like initialization, adding/staging files, committing changes, viewing commit history, and checking out specific versions of files.
+
+---
+### File: init.py
+#### Functions
+1. **pastport_init(location):**
+   - Initializes PASTPORT in the specified location.
+   - Creates a metadata directory named `.pastport\u00b6` within the location.
+   - Stages all files in the current directory and subdirectories using `stage.pastport_stage`.
+   - Performs an initial commit for all staged files using `commit.pastport_commit`.
+   - Sets a global `success_status` flag to indicate success or failure of the initialization process.
+
+2. **create_metadata(location):**
+   - Recursively creates the `.pastport\u00b6` metadata directory in all subdirectories.
+   - Excludes the `.pastport\u00b6` directory itself from recursion.
+   - Stages all files in the current directory using `stage.pastport_stage`.
+   - Performs an initial commit for all staged files using `commit.pastport_commit`.
+   - Handles potential exceptions during the initialization process and sets the `success_status` flag accordingly.
+
+#### Example Usage:
+To use this code, you would call the `pastport_init` function with the desired location:
+```
+import init
+
+location = "/path/to/your/project"
+init.pastport_init(location)
+```
+
+---
+### File: commit.py
+
+#### Functionality:
+The `pastport_commit` function is responsible for committing changes to a file within the PASTPORT system. It performs the following key tasks:
+1. **Retrieves Old and New File Locations:**
+   - Determines the absolute path of the new file location.
+   - Finds the corresponding old file location within the `.pastport\u00b6` directory.
+2. **Generates Commit Data:**
+   - Uses the `commit_data_file` module to calculate the commit data for the modified lines between the old and new files.
+3. **Updates Track File:**
+   - If the old file exists:
+     - Reads the existing track file to determine the last commit ID.
+     - Appends the new commit data to the track file, including the commit ID, line-based commit data, and commit message.
+   - If the old file doesn't exist (new file):
+     - Creates a new track file.
+     - Writes the initial commit ID (0) and commit message.
+     - Appends the commit data for the entire file.
+#### Example Usage:
+```
+import pastport
+
+file_location = "path/to/your/file.txt"
+pastport.pastport_commit(file_location, commit_message="My first commit")
+```
+---
+### File: stage.py
+This code defines the `pastport_stage` function, which is responsible for staging files in the PASTPORT version control system.
+
+#### Functions
+1. **Retrieves Absolute Path:**
+   - Converts the provided `pastport_root_location` to an absolute path for consistency.
+2. **Processes Based on Flag:**
+   - `-p` **(path)**:
+     - Prompts the user for individual file paths until they confirm with "y/Y".
+     - Validates each path:
+       - Ensures the path exists.
+       - Checks if the path is within the PASTPORT root location.
+     - Calls get_last_commit_id to retrieve the last commit ID for each valid file.
+   - `-a` **(add all)**:
+     - Uses a recursive function stage_recursion to traverse the PASTPORT root directory and its subdirectories (excluding the .pastport\u00b6 directory itself).
+     - For each file encountered, calls get_last_commit_id to retrieve a commit ID (0 for new files).
+3. **Generates Stage Data:**
+   - Determines the stage ID by reading the last line of the `.pastport\u00b6/pastport.stagelog` file (if it exists) and incrementing it.
+   - Creates a dictionary `file_paths_commit_ids` to store file paths as keys and corresponding commit IDs as values.
+4. **Writes Stage Information:**
+     - Creates the `.pastport\u00b6/pastport.stage` file:
+       - If any files were staged (`len(file_paths_commit_ids`) != 0):
+         - Writes the stage ID.
+         - Writes each file path and its commit ID separated by a delimiter (`\u00b6`).
+       - If no files were staged (`else` block for `-a` flag):
+         - Writes 0 as the stage ID for new files.
+         - Writes each file path and 0 as the commit ID.
+         - Optionally writes "Pastport Initiation" as the initial commit message (assuming this happens during initialization in `init.py`).
+     - Closes the `.pastport\u00b6/pastport.stage` file.
+5. `get_last_commit_id` **Function (Helper):**
+   - Takes a file path as input.
+   - Constructs the corresponding track file path within the `.pastport\u00b6` directory.
+   - If the track file exists:
+     - Reads the last line and extracts the commit ID.
+     - Returns the commit ID.
+   - If the track file doesn't exist (new file):
+     - Returns -1, indicating an untracked file (commit ID will become 0 on the next commit).
+
+---
+### File: status.py
+This code defines the pastport_status function, which helps determine the status of files within a PASTPORT repository.
+
+#### Functions
+1. **Lists:**
+   - Initializes empty lists to store untracked, deleted, and modified files.
+2. **Recursive Status Check:**
+   - Defines the `status_recursion` function to traverse the PASTPORT root directory and its subdirectories (excluding the `.pastport\u00b6` directory itself).
+   - **Untracked Files:**
+     - Checks for files in the current directory that are not present in the .pastport\u00b6 directory.
+     - If found, adds the file path to the untracked_files list.
+   - **Modified Files:**
+     - Checks for files that exist in both the current directory and the `.pastport\u00b6` directory.
+     - Attempts to read the corresponding `.track` file (error handling included).
+     - Extracts commit data using the `checkout.extract_commit_data` function.
+     - Reconstructs the file content based on the track data using the `reconstruct.reconstruct_file` function.
+     - Compares the reconstructed and actual file content using the `check_equal` function.
+     - If the content differs, adds the file path to the `modified_files` list.
+   - **Deleted Files:**
+     - Iterates through the files within the `.pastport\u00b6` directory.
+     - Excludes system files like `.stagelog`, `.stage`, and `.track`.
+     - If a deleted file is found, adds its path to the `deleted_files` list.
+   - **Recursion:**
+     - For subdirectories, calls status_recursion recursively to continue the status check.
+3. **Returns Status:**
+   - After traversing the entire directory structure, returns the lists of untracked, deleted, and modified files.
