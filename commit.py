@@ -35,8 +35,6 @@ def pastport_commit(file_location, commit_message = "Untitled Commit Message"):
         last_commit_id = -1
         commit_message = "Inititation of pastport"
         commit_data = cdf.commit_data_file(old_file_location=new_file_location, new_file_location=new_file_location)
-        print(commit_data)
-        # return 
     
     with open(track_file_location, "a") as track_file:
         # write the commit id
