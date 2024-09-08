@@ -287,7 +287,7 @@ This code defines the `pastport_stage` function, which is responsible for stagin
 
 ---
 ### File: status.py
-This code defines the pastport_status function, which helps determine the status of files within a PASTPORT repository.
+This code defines the `pastport_status` function, which helps determine the status of files within a PASTPORT repository.
 
 #### Functions
 1. **Lists:**
@@ -312,3 +312,47 @@ This code defines the pastport_status function, which helps determine the status
      - For subdirectories, calls status_recursion recursively to continue the status check.
 3. **Returns Status:**
    - After traversing the entire directory structure, returns the lists of untracked, deleted, and modified files.
+
+---
+### File: checkout.py
+This code defines the `pastport_checkout` function, which allows users to retrieve specific versions of files from the PASTPORT repository.
+
+#### Functions
+1. **Checks Existing File:**
+   - Determines the file name with extension and the corresponding old file location within the `.pastport\u00b6` directory.
+   - If the new file location already exists:
+     - Calls the `normal_checkout` function to handle the checkout process.
+   - If the new file location doesn't exist:
+     - Checks if the old file location exists (deleted file scenario).
+     - If the old file location exists:
+       - Calls the `deleted_checkout` function to reconstruct the file based on the specified commit ID.
+     - If neither the new nor the old file location exists:
+       - Displays an error message indicating an unknown and untracked file.
+2. `normal_checkout` **Function:**
+   - Handles checkout for existing files:
+     - If the commit ID is 0 (initial commit), copies the old file to the new location.
+     - Otherwise:
+       - Extracts the track file location based on the new file location.
+       - Reads the specified line (commit ID) from the track file (error handling included).
+       - Extracts commit data using the `extract_commit_data` function.
+       - Reconstructs the file content using `reconstruct.reconstruct_file`.
+       - Writes the reconstructed content to the new file location.
+3. `deleted_checkout` **Function:**
+   - Handles checkout for deleted files:
+     - If the commit ID is 0 (initial commit), copies the old file to a new location with the original name (assuming it was deleted).
+     - Otherwise:
+       - Extracts track file and new file locations based on the old file location.
+       - Reads the specified line (commit ID) from the track file (error handling included).
+       - Extracts commit data using the `extract_commit_data` function.
+       - Reconstructs the file content using `reconstruct.reconstruct_file`.
+       - Writes the reconstructed content to the new file location.
+4. `extract_commit_data` **Function:**
+   - Takes a line from the track file as input.
+   - Splits the line based on a delimiter (`\u00b6`).
+   - Extracts the commit message from the last element.
+   - Iterates through the remaining elements to parse commit data for each line:
+     - Extracts line number, insertion length, and deletion length.
+     - Processes insertions: extracts the inserted word and its index.
+     - Processes deletions: extracts the deleted word and its index.
+   - Builds a dictionary containing line-based insertion and deletion information.
+   - Returns the constructed commit data dictionary.
