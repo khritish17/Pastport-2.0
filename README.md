@@ -239,6 +239,46 @@ ARR = ["Words", "will", "be", "good", "sword"]
 </div>
 This reconstruction process successfully transforms the new line from the old line with the aid of commit data.
 
+## File Structures:
+### Commit Data Line
+**Structure: [&lt; insertion array &gt;, &lt; deletion array &gt;]** (List Data Structure used)
+
+**&lt; insertion array &gt;** = [(&lt; word to be inserted &gt;, &lt; index in new line &gt)]
+
+**&lt; deletion array &gt;** = [(&lt; word to be deleted &gt;, &lt; index in old line &gt)]
+
+**Example:**
+
+&lt; insertion array &gt; = [(‘hi’,0), (‘there’,5)]
+
+&lt; deletion array &gt; =  [(‘why’,2)]
+
+Commit Data Line = [ [(‘hi’,0), (‘there’,5)], [(‘why’,2)] ]
+
+### Commit Data File
+**Structure = {key=&lt;line no.&gt;, value=&lt;commit data line&gt;}** (Hashmap or Dictionary Data Structure used)
+
+**Example**
+
+{1: [ [(‘hi’,0), (‘there’,5)], [(‘why’,2)] ]}
+
+### Track file
+**Structure: &lt; commit id &gt; \u00b6 &lt; commit data &gt;**
+
+&lt; commit data &gt; : &lt; line number &gt; \u00b6 &lt; insertion length &gt; \u00b6 &lt; deletion length &gt; \u00b6 &lt; ins_word1 &gt; \u00b6 &lt; ins_index1 &gt; ...\u00b6 &lt; del_word1 &gt; \u00b6 &lt; del_index1 &gt; ...
+
+**Example:**
+
+Let Commit Data:
+
+0: [ [(‘hi’,0),(‘hello’,2)], [(‘there’,3),(‘where’, 4)] ]
+
+1: [ [(‘why’,3),(‘quit’,5)], [(‘since’,2),(‘sleep’, 6)] ]
+
+Let commit id = 3
+
+3¶0¶2¶2¶hi¶0¶hello¶2¶there¶3¶where¶4¶1¶why¶3¶quit¶5¶since¶2¶sleep¶6\n
+
 ## Documentation
 ### File: `lcs.py`
 #### Function:
